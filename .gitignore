@@ -1,0 +1,23 @@
+# Visual Studio 缓存
+.vs/
+*.vcxproj.user
+*.suo
+*.sdf
+*.opendb
+*.VC.db
+*.VC.db-shm
+*.VC.db-wal
+# 编译输出
+Debug/
+Release/
+x64/
+x86/
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.log
+# 系统文件
+Thumbs.db
+Desktop.ini
