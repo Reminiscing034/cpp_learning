@@ -1,23 +1,59 @@
-# Visual Studio 缓存
+# ============================================================
+#  C++ 学习仓库 —— 忽略规则
+# ============================================================
+#  原则：只提交「你亲手写的源码」和「工程配置文件」，
+#        一切能被编译器重新生成的、以及只属于你这台机器的东西，都不提交。
+# ============================================================
+
+# ---------- Visual Studio 的本地缓存与用户设置 ----------
 .vs/
 *.vcxproj.user
 *.suo
+*.user
 *.sdf
+*.opensdf
 *.opendb
 *.VC.db
 *.VC.db-shm
 *.VC.db-wal
-# 编译输出
-Debug/
-Release/
+*.vc.db
+*.vsidx
+*.aps
+*.ncb
+*.sln.docstates
+*.VC.VC.opendb
+
+# ---------- 编译输出（都能重新生成）----------
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
 x64/
 x86/
+ipch/
 *.exe
+*.dll
+*.lib
+*.exp
 *.obj
+*.o
 *.pdb
 *.ilk
 *.idb
+*.iobj
+*.ipdb
+*.tlog
+*.recipe
+*.lastbuildstate
 *.log
-# 系统文件
+
+# ---------- 操作系统产生的 ----------
 Thumbs.db
 Desktop.ini
+$RECYCLE.BIN/
+
+# ---------- 本地备份 / 临时文件 ----------
+_*.zip
+*.tmp
+*.bak
+*~
