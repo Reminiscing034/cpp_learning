@@ -1,12 +1,30 @@
 @echo off
 rem ============================================================
-rem  push.bat —— 双击这个文件，就能提交并上传到 GitHub
+rem  push.bat - launcher for push.ps1 (daily commit + upload)
 rem ============================================================
-rem  它只是把同目录下的 push.ps1 跑起来。
-rem  真正的逻辑都在 push.ps1 里，看不懂可以打开那个文件看注释。
+rem  Double-click this file to commit and upload your changes.
+rem  The real logic lives in push.ps1 - open it to read the
+rem  comments there.
+rem
+rem  ------------------------------------------------------------
+rem  KEEP THIS FILE PURE ASCII. DO NOT ADD ANY NON-ASCII CHARACTER.
+rem  ------------------------------------------------------------
+rem  Why: cmd.exe reads .bat files using the OEM codepage
+rem  (936 / GBK on this machine), but editors save files as UTF-8.
+rem  Any non-ASCII byte here gets decoded into garbage, and cmd may
+rem  then try to run that garbage as a command.
+rem
+rem  This actually happened once: a Chinese comment line got split,
+rem  and its tail was executed as a command, producing the error
+rem  "<mojibake> is not recognized as an internal or external
+rem  command, or a batch file".
+rem
+rem  So: all Chinese messages belong in push.ps1, which PowerShell
+rem  reads correctly (that file is saved as UTF-8 with BOM).
 rem ============================================================
 
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0push.ps1"
 
-rem 如果 PowerShell 自己没能暂停（比如启动就失败），这里兜个底
+rem Safety net: if PowerShell itself failed to start, keep the
+rem window open so the error message can be read.
 if errorlevel 1 pause

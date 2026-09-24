@@ -93,10 +93,13 @@ if ($LASTEXITCODE -eq 0) {
     $ahead = [int](& git rev-list --count '@{u}..HEAD' 2>$null)
 }
 
+$skipCommit = $false
 if ($changedCount -eq 0) {
     Ok '没有需要提交的改动 —— 文件都是最新的。'
     if ($ahead -gt 0) {
         Warn "但有 $ahead 个本地提交还没推送到 GitHub。"
+        Info '那就跳过提交，直接推送。'
+        $skipCommit = $true
     } else {
         Info '（GitHub 上也已经同步，什么都不用做）'
         Finish 0
@@ -110,6 +113,11 @@ if ($changedCount -eq 0) {
 # ------------------------------------------------------------
 # 3. 安全检查：别把编译产物提交上去
 # ------------------------------------------------------------
+if ($skipCommit) {
+    Title '第 2~4 步 / 5：跳过'
+    Info '没有新改动要提交，所以「安全检查 / 写说明 / 提交」这三步都不用做。'
+} else {
+
 Title '第 2 步 / 5：安全检查'
 
 # 只揪「会被加进仓库」的编译产物。
@@ -181,6 +189,8 @@ if ($LASTEXITCODE -ne 0) {
 }
 Ok '已生成一个本地提交。'
 
+}   # ← 结束「有改动要提交」的分支
+
 # ------------------------------------------------------------
 # 6. 推送
 # ------------------------------------------------------------
@@ -207,12 +217,23 @@ if ($hasUpstream) {
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host ''
-    Fail '推送失败。常见原因：'
-    Warn '  · 网络问题 —— 换个网络，或稍后重试'
-    Warn '  · 登录过期 —— 再运行一次，在弹出的窗口里重新登录 GitHub'
-    Warn '  · 远程有本地没有的提交 —— 比如你在 GitHub 网页上直接改过文件'
+    Fail '推送失败。看上面 git 输出的最后几行，对号入座：'
     Write-Host ''
-    Ok '别担心：你的提交已经安全保存在本地了，不会丢。'
+    Warn '① 出现 "Could not resolve host" / "Failed to connect" / "timed out"'
+    Info '   → 【网络连不上 GitHub】国内直连经常不通。'
+    Info '      开加速器 / VPN 之后再运行本脚本即可。'
+    Info '      ★ 这种情况不会弹登录窗口，那是正常的，不是登录问题。'
+    Write-Host ''
+    Warn '② 出现 "Authentication failed" / "403" / "Password authentication was removed"'
+    Info '   → 【登录凭据的问题】这时会弹出窗口让你登录 GitHub。'
+    Info '      如果没弹窗，打开「凭据管理器 → Windows 凭据」，'
+    Info '      删掉 github.com 那条旧记录，再运行本脚本。'
+    Write-Host ''
+    Warn '③ 出现 "rejected" / "non-fast-forward" / "fetch first"'
+    Info '   → 【远程有本地没有的提交】比如你在 GitHub 网页上直接改过文件。'
+    Info '      先执行  git pull --rebase  然后再推送。'
+    Write-Host ''
+    Ok '你的提交已经安全保存在本地了，不会丢。'
     Info '问题解决后再运行一次本脚本就行。'
     Finish 1
 }
