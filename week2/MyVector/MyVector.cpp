@@ -162,14 +162,24 @@ MyVector::MyVector(const MyVector& other) {
     }
 }
 
-MyVector&MyVector:: operator=(const MyVector& other) {
-    if (&other == this)return *this;
-    capacity_ = other.capacity_;
-    delete[]data_;
-    data_ = nullptr;
-    data_ = new int[capacity_];
-    size_ = other.size_;
-    for (int i = 0; i < size_; i++) {
-        data_[i] = other.data_[i];
-    }return *this;
+//MyVector&MyVector:: operator=(const MyVector& other) {
+//    if (&other == this)return *this;
+//    capacity_ = other.capacity_;
+//    delete[]data_;
+//    data_ = nullptr;
+//    data_ = new int[capacity_];
+//    size_ = other.size_;
+//    for (int i = 0; i < size_; i++) {
+//        data_[i] = other.data_[i];
+//    }return *this;
+//}
+void MyVector::swap(MyVector& other) noexcept {
+    std::swap(data_, other.data_);
+    std::swap(size_, other.size_);
+    std::swap(capacity_, other.capacity_);
+}
+
+MyVector& MyVector::operator=(MyVector other) {   // 按值传参 = 自动拷贝一份
+    swap(other);                                   // 和这份副本交换
+    return *this;                                  // other 析构，把旧内存带走
 }

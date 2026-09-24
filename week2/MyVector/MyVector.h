@@ -1,4 +1,5 @@
 #pragma once
+#include<utility>
 #include <cstddef>      // size_t 在这里
 
 // ============================================================
@@ -22,7 +23,9 @@ public:
     explicit MyVector(size_t n);         // 造 n 个元素，初值都是 0
     ~MyVector();                         // 释放内存（不写就是内存泄漏）
     MyVector(const MyVector& other);
-    MyVector& operator=(const MyVector& other);
+    /*MyVector& operator=(const MyVector& other);*/
+    MyVector& operator=(MyVector other);      // ★ 按值传递，不是 const&
+    void      swap(MyVector& other)noexcept;        
     // ---------- 容量 ----------
     size_t size() const;                 // 现在真正装了几个元素
     size_t capacity() const;             // 现在一共申请了几个格子
