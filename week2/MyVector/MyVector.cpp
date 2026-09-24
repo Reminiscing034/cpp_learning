@@ -148,3 +148,28 @@ void MyVector::pop_back() {
         size_--;
     }
 }
+
+void MyVector::clear() {
+    size_ = 0;
+}
+
+MyVector::MyVector(const MyVector& other) {
+    capacity_ = other.capacity_;
+    data_ = new int[capacity_];
+    size_ = other.size_;
+    for (int i = 0; i < size_; i++) {
+        data_[i] = other.data_[i];
+    }
+}
+
+MyVector&MyVector:: operator=(const MyVector& other) {
+    if (&other == this)return *this;
+    capacity_ = other.capacity_;
+    delete[]data_;
+    data_ = nullptr;
+    data_ = new int[capacity_];
+    size_ = other.size_;
+    for (int i = 0; i < size_; i++) {
+        data_[i] = other.data_[i];
+    }return *this;
+}

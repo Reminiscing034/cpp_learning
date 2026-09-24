@@ -170,10 +170,142 @@ int main() {
     }
 
     // ------------------------------------------------------------
+    cout << endl << "-- 8. clear --" << endl;
+    {
+        MyVector v;
+        v.push_back(1);
+        v.push_back(2);
+        v.push_back(3);
+        size_t capBefore = v.capacity();
+
+        v.clear();
+        check(v.size() == 0, "clear() 后 size() == 0");
+        check(v.empty(),     "clear() 后 empty() == true");
+        check(v.capacity() == capBefore,
+              "clear() 不改变 capacity()（std::vector 也是这个约定）");
+
+        // 清空之后还能继续用
+        v.push_back(9);
+        check(v.size() == 1, "clear() 之后还能 push_back");
+        if (sizeIs(v, 1)) {
+            check(v[0] == 9, "新加进去的元素是 9");
+        }
+
+        // 本来就空的时候调 clear 也不该出问题
+        MyVector e;
+        e.clear();
+        check(e.size() == 0, "对空的 MyVector 调 clear() 不出问题");
+    }
+
+    // ------------------------------------------------------------
+    cout << endl << "-- 9. 拷贝构造 --" << endl;
+    {
+        MyVector a;
+        a.push_back(1);
+        a.push_back(2);
+        a.push_back(3);
+
+        MyVector b = a;                     // 用已有对象 a 造出新对象 b
+
+        check(b.size() == 3, "拷贝出来的 size 和原对象一样");
+        if (sizeIs(b, 3)) {
+            check(b[0] == 1 && b[1] == 2 && b[2] == 3, "拷贝出来的元素值也一样");
+        }
+        check(b.data() != a.data(), "两个对象各自拥有独立的内存，没有共用同一块");
+
+        // 关键：改一个不能影响另一个
+        b[0] = 99;
+        check(a[0] == 1, "改副本，原对象不受影响");
+        a[1] = 88;
+        check(b[1] == 2, "改原对象，副本不受影响");
+
+        // 拷贝一个空的
+        MyVector empty1;
+        MyVector empty2 = empty1;
+        check(empty2.size() == 0, "拷贝空的 MyVector，得到的还是空的");
+    }
+
+    // ------------------------------------------------------------
+    cout << endl << "-- 10. 拷贝赋值 --" << endl;
+    {
+        MyVector a;
+        a.push_back(1);
+        a.push_back(2);
+
+        MyVector b;
+        b.push_back(9);                     // b 本来有自己的数据
+        b.push_back(8);
+        b.push_back(7);
+
+        b = a;                              // 把 a 赋给 b
+
+        check(b.size() == 2, "赋值后 size 变成对方的");
+        if (sizeIs(b, 2)) {
+            check(b[0] == 1 && b[1] == 2, "赋值后元素值正确");
+        }
+        check(b.data() != a.data(), "赋值后两边也没有共用内存");
+
+        b[0] = 99;
+        check(a[0] == 1, "改被赋值的一方，原对象不受影响");
+
+        // 赋值给一个空对象
+        MyVector c;
+        c = a;
+        check(c.size() == 2, "空的 MyVector 也能被赋值");
+    }
+
+    // ------------------------------------------------------------
+    cout << endl << "-- 11. 自我赋值（a = a）--" << endl;
+    {
+        MyVector a;
+        a.push_back(5);
+        a.push_back(6);
+
+        a = a;                              // 自己赋给自己
+
+        check(a.size() == 2, "自我赋值后 size 不变");
+        if (sizeIs(a, 2)) {
+            check(a[0] == 5 && a[1] == 6, "自我赋值后数据完好，没被抹掉");
+        }
+    }
+
+    // ------------------------------------------------------------
+    cout << endl << "-- 12. 连续赋值（z = y = x）--" << endl;
+    {
+        MyVector x, y, z;
+        x.push_back(7);
+
+        z = y = x;
+
+        check(y.size() == 1, "中间那个也被赋值了");
+        check(z.size() == 1, "最左边那个也被赋值了");
+        if (sizeIs(z, 1)) {
+            check(z[0] == 7, "值一直传到了最左边");
+        }
+    }
+
+    // ------------------------------------------------------------
+    cout << endl << "-- 13. 多个互相拷贝的对象同时存在、一起退场 --" << endl;
+    {
+        // 这一段故意不做 check —— 它要测的就是「能不能活着走到这里」。
+        // 先让 5 个互相拷贝出来的对象同时存在，再让它们一起退场。
+        MyVector a;
+        for (int i = 0; i < 5; i++) a.push_back(i);
+
+        MyVector b = a;
+        MyVector c;
+        c = a;
+        MyVector d = b;
+        MyVector e;
+        e = c = a;
+    }
+    check(true, "5 个互相拷贝的对象同时存在、一起退场，程序没有崩");
+
+    // ------------------------------------------------------------
     cout << endl << "=======================================" << endl;
     cout << "通过 " << passed << " 项，失败 " << failed << " 项" << endl;
     if (failed == 0) {
-        cout << "全部通过 —— MyVector v1 完成！" << endl;
+        cout << "全部通过 —— MyVector v1 + v2 完成！" << endl;
     } else {
         cout << "还有 " << failed << " 项没过，回 MyVector.cpp 继续改。" << endl;
     }

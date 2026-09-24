@@ -21,7 +21,8 @@ public:
     MyVector();                          // 造一个空的
     explicit MyVector(size_t n);         // 造 n 个元素，初值都是 0
     ~MyVector();                         // 释放内存（不写就是内存泄漏）
-
+    MyVector(const MyVector& other);
+    MyVector& operator=(const MyVector& other);
     // ---------- 容量 ----------
     size_t size() const;                 // 现在真正装了几个元素
     size_t capacity() const;             // 现在一共申请了几个格子
@@ -35,7 +36,7 @@ public:
     // ---------- 增删 ----------
     void push_back(int value);           // 在末尾加一个元素
     void pop_back();                     // 删掉末尾那个元素
-
+    void clear();
 private:
     int*   data_;        // 指向堆上那块内存；空的时候是 nullptr
     size_t size_;        // 真正装了几个
