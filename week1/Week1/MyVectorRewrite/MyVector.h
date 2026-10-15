@@ -7,6 +7,7 @@
 class MyVector {
 public:
 	MyVector();
+	MyVector(const MyVector& other);
 	~MyVector();
 
 	std::size_t size()const;
@@ -16,6 +17,7 @@ public:
 	void push_back(int value);
 	void pop_back();
 	int& operator[](std::size_t i);
+	MyVector& operator=(const MyVector& other);
 	void clear() { size_ = 0; }
 private:
 	int* data_;

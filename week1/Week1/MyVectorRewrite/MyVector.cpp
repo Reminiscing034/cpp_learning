@@ -5,6 +5,14 @@ MyVector::MyVector() {
 	data_ = nullptr;
 	capacity_ = 0;
 }
+MyVector::MyVector(const MyVector& other) {
+	this->capacity_ = other.capacity_;
+	this->size_ = other.size_;
+	this->data_ = new int[this->capacity_];
+	for (std::size_t i = 0; i < this->size_; i++) {
+		this->data_[i] = other.data_[i];
+	}
+}
 MyVector::~MyVector() {
 	delete[]data_;
 }
@@ -38,4 +46,16 @@ void MyVector::pop_back() {
 }
 int& MyVector::operator[](std::size_t i) {
 	return data_[i];
+}
+
+MyVector& MyVector::operator=(const MyVector& other) {
+	if (this == &other)return *this;
+	this->capacity_ = other.capacity_;
+	this->size_ = other.size_;
+	delete[]this->data_;
+	this->data_ = new int[this->capacity_];
+	for (std::size_t i = 0; i < this->size_; i++) {
+		this->data_[i] = other.data_[i];
+	}
+	return *this;
 }
